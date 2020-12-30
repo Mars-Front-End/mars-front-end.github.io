@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>js-sdk测试</title>
+  <script src="//res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="https://open.work.weixin.qq.com/wwopen/js/jwxwork-1.0.0.js"></script>
+  <script src="https://static-ftcms.jd.com/p/files/5febe3f81673cb0d20295307.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- <div class="">
+      <button id="getSelectPeopleBtn">获取选人接口</button>
+    </div> -->
+  </div>
+
+  <script>
+    var vConsole = new VConsole();
+    var CORPID = 'ww931896efe9f7f848';
+    var AGENTID = '1000002';
+    var timestamp = 1609344983459;
+    var nonceStr = 'Wm3WZYTPz0wzccnW';
+    var configSignature = '48b9221f5ad5ab5101bb6c0eb7cca0186eda9fe9';
+    var agentConfigSignature = 'fa92c931238eb172ecb0f8acaf42c013502a2fc2';
+    var JS_API_LIST = ['checkJsApi', 'agentConfig', 'selectEnterpriseContact', 'getContext', 'getCurExternalContact'];
+    var CHECK_API_LIST = ['agentConfig', 'selectEnterpriseContact', 'getContext', 'getCurExternalContact'];
+    var AGENT_API_LIST = ['getContext', 'getCurExternalContact'];
+    
+    wx.config({
+      beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+      appId: CORPID, // 必填，企业微信的corpID
+      timestamp: timestamp, // 必填，生成签名的时间戳
+      nonceStr: nonceStr, // 必填，生成签名的随机串
+      signature: configSignature,// 必填，签名，见 附录-JS-SDK使用权限签名算法
+      jsApiList: JS_API_LIST // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
+    });
+
+    wx.ready(function () {
+      wx.checkJsApi({
+        jsApiList: CHECK_API_LIST, // 需要检测的JS接口列表，所有JS接口列表见附录2,
+        success: function (){
+          // 以键值对的形式返回，可用的api值true，不可用为false
+          // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+          wx.agentConfig({
+            corpid: CORPID, // 必填，企业微信的corpid，必须与当前登录的企业一致
+            agentid: AGENTID, // 必填，企业微信的应用id （e.g. 1000247）
+            timestamp: timestamp, // 必填，生成签名的时间戳
+            nonceStr: nonceStr, // 必填，生成签名的随机串
+            signature: agentConfigSignature,// 必填，签名，见附录-JS-SDK使用权限签名算法
+            jsApiList: AGENT_API_LIST, //必填
+            success: function(res) {
+              console.log('写入鉴权成功');
+            },
+            fail: function (res) {
+              // if (res.errMsg.indexOf('function not exist') > -1) {
+              //   alert('版本过低请升级')
+              // }
+              console.warn(res.errMsg);
+            },
+          });
+        }
+      })
+    });
+
+    wx.error((function (e) {
+      console.warn('wx.error: ' + e.errMsg);
+    }));
+  </script>
+</body>
+</html>
